@@ -1,11 +1,8 @@
 import { motion } from 'motion/react';
-import { Check, Shield, Smartphone, Bell, Star } from 'lucide-react';
-import { useState } from 'react';
+import { Check, Shield, Smartphone, Bell } from 'lucide-react';
 import productImage from '../../imports/image-4.png';
 
 export function ProductSection() {
-  const [isHovered, setIsHovered] = useState(false);
-
   const benefits = [
     'Jednostavna instalacija - spremno za 10 minuta',
     'Kompatibilno sa svim pametnim telefonima',
@@ -35,20 +32,18 @@ export function ProductSection() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, type: "spring", stiffness: 80 }}
             className="relative"
-            onHoverStart={() => setIsHovered(true)}
-            onHoverEnd={() => setIsHovered(false)}
           >
             <motion.div
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
-              className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl p-12 relative overflow-hidden"
+              className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl p-4 md:p-6 relative overflow-hidden"
             >
               <motion.img
-                animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+                whileHover={{ scale: 1.04 }}
                 transition={{ duration: 0.4 }}
                 src={productImage}
-                alt="Pametno video zvono"
-                className="w-full h-auto relative z-10"
+                alt="Domify pametno video zvono"
+                className="relative z-10 w-full h-auto rounded-2xl shadow-2xl"
               />
 
               {/* Animated decorative elements */}
@@ -70,36 +65,6 @@ export function ProductSection() {
               />
             </motion.div>
 
-            {/* Floating badge with animation */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0, rotate: -45 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full font-semibold shadow-lg"
-            >
-              -30% POPUST
-            </motion.div>
-
-            {/* Rating stars floating element */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2"
-            >
-              {[...Array(5)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8 + i * 0.1 }}
-                >
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                </motion.div>
-              ))}
-              <span className="text-sm font-semibold ml-1">5.0</span>
-            </motion.div>
           </motion.div>
 
           {/* Product Details */}
@@ -180,7 +145,7 @@ export function ProductSection() {
                   whileInView={{ scale: 1, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 1.2, type: "spring", stiffness: 200 }}
-                  className="text-4xl font-bold text-gray-900"
+                  className="text-4xl font-extrabold text-gray-900"
                 >
                   2.999 RSD
                 </motion.span>
@@ -194,13 +159,14 @@ export function ProductSection() {
                   4.299 RSD
                 </motion.span>
               </div>
-              <motion.button
+              <motion.a
+                href="#kontakt"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-[#7fff00] text-[#1a1f2e] py-4 rounded-full hover:bg-[#6eee00] transition-colors font-semibold text-lg shadow-lg shadow-[#7fff00]/20"
+                className="block text-center w-full bg-[#7fff00] text-[#1a1f2e] py-4 rounded-full hover:bg-[#6eee00] transition-colors font-bold text-lg shadow-lg shadow-[#7fff00]/20"
               >
-                Dodaj u Korpu
-              </motion.button>
+                Naruci preko Instagrama
+              </motion.a>
               <div className="flex items-center justify-center gap-6 text-sm text-gray-600">
                 <motion.div
                   whileHover={{ scale: 1.1 }}

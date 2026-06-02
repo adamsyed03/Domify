@@ -1,6 +1,5 @@
-import { motion, useMotionValue, useTransform } from 'motion/react';
+import { motion } from 'motion/react';
 import { useState } from 'react';
-import featuresImage from '../../imports/image-5.png';
 
 const features = [
   {
@@ -178,24 +177,7 @@ export function Features() {
           ))}
         </div>
 
-        {/* Feature Image with parallax effect */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="max-w-3xl mx-auto"
-        >
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
-            className="relative rounded-2xl overflow-hidden shadow-2xl"
-          >
-            <img
-              src={featuresImage}
-              alt="Pametno zvono karakteristike"
-              className="w-full h-auto"
-            />
+        <div className="hidden">
             {/* Overlay gradient on hover */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -210,8 +192,7 @@ export function Features() {
                 Sve funkcije u jednom uređaju
               </motion.p>
             </motion.div>
-          </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
