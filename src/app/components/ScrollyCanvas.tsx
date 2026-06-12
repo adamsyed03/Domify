@@ -46,7 +46,7 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const pixelRatio = window.devicePixelRatio || 1;
+    const pixelRatio = Math.min(Math.max(window.devicePixelRatio || 1, 2), 3);
     const width = window.innerWidth;
     const height = window.innerHeight;
 
@@ -55,6 +55,8 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const imgRatio = img.naturalWidth / img.naturalHeight;
     const canvasRatio = width / height;
@@ -102,7 +104,7 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
   }, [images, frameIndex]);
 
   return (
-    <div id="pocetna" ref={containerRef} className="relative h-[420vh] bg-[#060812]">
+    <div id="pocetna" ref={containerRef} className="relative h-[250vh] bg-[#060812]">
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
         <canvas
           ref={canvasRef}
