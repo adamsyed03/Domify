@@ -73,7 +73,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0], index: n
       }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center relative overflow-hidden group"
+      className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center relative overflow-hidden group max-md:p-4 max-md:rounded-xl"
     >
       {/* Animated background gradient */}
       <motion.div
@@ -87,9 +87,9 @@ function FeatureCard({ feature, index }: { feature: typeof features[0], index: n
           scale: [1, 1.1, 1.1, 1.1, 1]
         } : {}}
         transition={{ duration: 0.5 }}
-        className={`w-16 h-16 ${feature.bgColor} rounded-full flex items-center justify-center mx-auto mb-4 relative`}
+        className={`w-16 h-16 ${feature.bgColor} rounded-full flex items-center justify-center mx-auto mb-4 relative max-md:mb-3 max-md:h-11 max-md:w-11`}
       >
-        <div className={feature.textColor}>
+        <div className={`${feature.textColor} max-md:[&_svg]:h-6 max-md:[&_svg]:w-6`}>
           {feature.icon}
         </div>
 
@@ -105,12 +105,12 @@ function FeatureCard({ feature, index }: { feature: typeof features[0], index: n
       </motion.div>
 
       <motion.h3
-        className="text-xl font-semibold mb-2"
+        className="text-xl font-semibold mb-2 max-md:text-base max-md:leading-tight"
         animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
       >
         {feature.title}
       </motion.h3>
-      <p className="text-gray-600">{feature.description}</p>
+      <p className="text-gray-600 max-md:text-xs max-md:leading-snug">{feature.description}</p>
 
       {/* Decorative corner element */}
       <motion.div
@@ -124,7 +124,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0], index: n
 
 export function Features() {
   return (
-    <section id="karakteristike" className="py-20 bg-gray-50 relative overflow-hidden">
+    <section id="karakteristike" className="py-20 bg-gray-50 relative overflow-hidden max-md:py-10">
       {/* Animated background elements */}
       <motion.div
         animate={{
@@ -143,20 +143,20 @@ export function Features() {
         className="absolute bottom-10 left-10 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-md:px-3">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-16 max-md:mb-8"
         >
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-gray-500 mb-2 uppercase tracking-wider text-sm font-medium"
+            className="text-gray-500 mb-2 uppercase tracking-wider text-sm font-medium max-md:text-[11px]"
           >
             Zašto izabrati naše pametno zvono?
           </motion.p>
@@ -165,13 +165,13 @@ export function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
+            className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 max-md:text-2xl max-md:mb-2"
           >
             Ekskluzivne Karakteristike
           </motion.h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16 max-md:grid-cols-2 max-md:gap-3 max-md:mb-8">
           {features.map((feature, index) => (
             <FeatureCard key={index} feature={feature} index={index} />
           ))}

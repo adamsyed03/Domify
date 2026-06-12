@@ -1,152 +1,152 @@
-import { motion } from 'motion/react';
+import { useState } from 'react';
+import { motion, MotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
 import { ShoppingCart, Play } from 'lucide-react';
 
-export function Hero() {
+type HeroProps = {
+  scrollProgress: MotionValue<number>;
+};
+
+function ScrollReveal({
+  children,
+  progress,
+  range,
+  className = '',
+  interactive = false,
+}: {
+  children: React.ReactNode;
+  progress: MotionValue<number>;
+  range: [number, number];
+  className?: string;
+  interactive?: boolean;
+}) {
+  const [isActive, setIsActive] = useState(progress.get() >= range[1]);
+  const opacity = useTransform(progress, range, [0, 1]);
+  const y = useTransform(progress, range, [36, 0]);
+  const scale = useTransform(progress, range, [0.98, 1]);
+
+  useMotionValueEvent(progress, 'change', (latest) => {
+    setIsActive(latest >= range[1]);
+  });
+
   return (
-    <section id="pocetna" className="relative overflow-hidden bg-[#1a1f2e] text-white py-16 md:py-32">
-      {/* Animated background elements */}
+    <motion.div
+      style={{ opacity, y, scale, pointerEvents: interactive && isActive ? 'auto' : 'none' }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function Hero({ scrollProgress }: HeroProps) {
+  const underlineScale = useTransform(scrollProgress, [0.04, 0.14], [0, 1]);
+
+  return (
+    <section className="relative flex h-full items-center justify-center overflow-hidden text-white">
       <motion.div
         animate={{
           scale: [1, 1.3, 1],
           opacity: [0.3, 0.5, 0.3],
         }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#7fff00]/10 rounded-full blur-3xl"
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-[#7fff00]/10 blur-3xl"
       />
       <motion.div
         animate={{
           scale: [1.3, 1, 1.3],
           opacity: [0.2, 0.4, 0.2],
         }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl"
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          <motion.div className="space-y-6">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight"
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+        <div className="mx-auto flex min-h-[72vh] max-w-4xl flex-col items-center justify-center">
+          <div className="flex w-full flex-col items-center space-y-6 md:space-y-8">
+            <ScrollReveal
+              progress={scrollProgress}
+              range={[0, 0.12]}
+              className="w-full"
             >
-              Pametno Video Zvono
-              <br />
-              <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="text-[#7fff00] inline-block relative pb-3"
-              >
-                za Vaš Dom
-                <motion.span
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.8, delay: 0.9, ease: "easeOut" }}
-                  className="absolute left-0 right-0 bottom-0 h-1 origin-left rounded-full bg-[#7fff00]"
-                />
-              </motion.span>
-            </motion.h1>
+              <h1 className="text-4xl font-extrabold leading-tight drop-shadow-2xl md:text-6xl lg:text-7xl">
+                Pametno Video Zvono
+                <br />
+                <span className="relative inline-block pb-3 text-[#7fff00]">
+                  za Vaš Dom
+                  <motion.span
+                    style={{ scaleX: underlineScale }}
+                    className="absolute bottom-0 left-0 right-0 h-1 origin-left rounded-full bg-[#7fff00]"
+                  />
+                </span>
+              </h1>
+            </ScrollReveal>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="text-base md:text-xl text-white/80 max-w-2xl mx-auto font-medium"
+            <ScrollReveal
+              progress={scrollProgress}
+              range={[0.18, 0.36]}
+              className="mx-auto max-w-3xl"
             >
-              Vidite ko je na vratima. Bilo gde, bilo kada. HD video kvalitet sa dvosmernom komunikacijom.
-            </motion.p>
+              <p className="text-2xl font-semibold leading-snug text-white drop-shadow-2xl md:text-4xl">
+                Vidite ko je na vratima. Bilo gde, bilo kada.
+              </p>
+              <p className="mx-auto mt-5 max-w-2xl text-base font-medium text-white/85 drop-shadow-lg md:text-xl">
+                HD video kvalitet sa dvosmernom komunikacijom.
+              </p>
+            </ScrollReveal>
 
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.9 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6"
+            <ScrollReveal
+              progress={scrollProgress}
+              range={[0.42, 0.62]}
+              className="mx-auto w-full max-w-3xl"
+              interactive
             >
-              <motion.a
-                href="#kontakt"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto justify-center bg-[#7fff00] text-[#1a1f2e] px-8 py-4 rounded-full hover:bg-[#6eee00] transition-colors font-bold inline-flex items-center gap-2 shadow-lg shadow-[#7fff00]/20"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                Naruči Sada
-              </motion.a>
-              <motion.a
-                href="#karakteristike"
-                whileHover={{ scale: 1.05, borderColor: 'rgba(127, 255, 0, 0.5)' }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto justify-center border border-white/30 text-white px-8 py-4 rounded-full hover:bg-white/10 transition-all font-bold inline-flex items-center gap-2"
-              >
+              <div className="flex flex-col items-center gap-6">
                 <motion.div
-                  animate={{
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  whileHover={{ scale: 1.05 }}
+                  className="inline-block rounded-full border border-[#7fff00]/60 bg-black/35 px-6 py-3 shadow-2xl backdrop-blur-md"
                 >
-                  <Play className="w-5 h-5 fill-current" />
+                  <span className="mr-3 text-sm text-white/60 line-through">4.299 RSD</span>
+                  <span className="text-2xl font-extrabold text-[#7fff00]">2.999 RSD</span>
                 </motion.div>
-                Saznaj Više
-              </motion.a>
-            </motion.div>
 
-            {/* Price Badge with animation */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 1.1, type: "spring", stiffness: 200 }}
-              className="pt-8"
-            >
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="inline-block bg-[#7fff00]/20 border border-[#7fff00]/50 px-6 py-3 rounded-full cursor-default"
-              >
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.3 }}
-                  className="text-white/60 line-through text-sm mr-3"
-                >
-                  4.299 RSD
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.5 }}
-                  className="text-[#7fff00] font-extrabold text-2xl"
-                >
-                  2.999 RSD
-                </motion.span>
-              </motion.div>
-            </motion.div>
+                <div className="flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row sm:items-center">
+                  <motion.a
+                    href="#kontakt"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#7fff00] px-8 py-4 font-bold text-[#1a1f2e] shadow-lg shadow-[#7fff00]/20 transition-colors hover:bg-[#6eee00] sm:w-auto"
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    Naruči Sada
+                  </motion.a>
+                  <motion.a
+                    href="#karakteristike"
+                    whileHover={{ scale: 1.05, borderColor: 'rgba(127, 255, 0, 0.5)' }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/40 bg-black/20 px-8 py-4 font-bold text-white backdrop-blur-md transition-all hover:bg-white/10 sm:w-auto"
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <Play className="h-5 w-5 fill-current" />
+                    </motion.div>
+                    Saznaj Više
+                  </motion.a>
+                </div>
 
-            {/* Floating indicators */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.7 }}
-              className="flex justify-center gap-8 pt-8 text-sm"
-            >
-              {['✓ Sigurna kupovina', '✓ 2 godine garancije', '✓ Podrska pri instalaciji'].map((text, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.7 + i * 0.1 }}
-                  className="text-white/70 hidden md:block"
-                >
-                  {text}
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
+                <div className="hidden justify-center gap-8 pt-3 text-sm text-white/75 md:flex">
+                  {['✓ Sigurna kupovina', '✓ 2 godine garancije', '✓ Podrska pri instalaciji'].map((text) => (
+                    <div key={text}>{text}</div>
+                  ))}
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
       </div>
 
-      {/* Decorative gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/5 pointer-events-none"></div>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(6,8,18,0.18)_48%,rgba(6,8,18,0.72)_100%)]" />
     </section>
   );
 }
