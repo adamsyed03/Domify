@@ -165,7 +165,7 @@ export function ProductSection() {
                 whileTap={{ scale: 0.98 }}
                 className="block text-center w-full bg-[#7fff00] text-[#1a1f2e] py-4 rounded-full hover:bg-[#6eee00] transition-colors font-bold text-lg shadow-lg shadow-[#7fff00]/20 max-md:py-3 max-md:text-sm"
               >
-                Naruci preko Instagrama
+                Naruči preko Instagrama
               </motion.a>
               <div className="flex items-center justify-center gap-6 text-sm text-gray-600 max-md:gap-2 max-md:text-[10px]">
                 <motion.div

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { MotionValue, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 
 const FRAME_COUNT = 96;
@@ -17,50 +17,51 @@ type ScrollyCanvasProps = {
 export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasSizeRef = useRef({ width: 0, height: 0, pixelRatio: 0 });
+  const animationFrameRef = useRef<number | null>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, FRAME_COUNT - 1]);
-  
-  useEffect(() => {
-    const loadedImages: HTMLImageElement[] = [];
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image();
-      img.decoding = 'async';
-      img.onload = () => {
-        if (Math.round(frameIndex.get()) === i) {
-          drawImage(img);
-        }
-      };
-      img.src = getFramePath(i);
-      loadedImages.push(img);
-    }
-    setImages(loadedImages);
-  }, [frameIndex]);
 
-  const drawImage = (img: HTMLImageElement) => {
+  const syncCanvasSize = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return canvasSizeRef.current;
+
+    const pixelRatio = Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const current = canvasSizeRef.current;
+
+    if (current.width !== width || current.height !== height || current.pixelRatio !== pixelRatio) {
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      canvasSizeRef.current = { width, height, pixelRatio };
+    }
+
+    return canvasSizeRef.current;
+  }, []);
+
+  const drawImage = useCallback((img: HTMLImageElement) => {
     const canvas = canvasRef.current;
     if (!canvas || !img.naturalWidth || !img.naturalHeight) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const pixelRatio = Math.min(Math.max(window.devicePixelRatio || 1, 2), 3);
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const { width, height, pixelRatio } = syncCanvasSize();
+    if (!width || !height) return;
 
-    canvas.width = width * pixelRatio;
-    canvas.height = height * pixelRatio;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
 
     const imgRatio = img.naturalWidth / img.naturalHeight;
     const canvasRatio = width / height;
-    
+
     let drawWidth = width;
     let drawHeight = height;
     let offsetX = 0;
@@ -76,12 +77,33 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
 
     ctx.clearRect(0, 0, width, height);
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-  };
+  }, [syncCanvasSize]);
+
+  useEffect(() => {
+    const loadedImages: HTMLImageElement[] = [];
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        if (Math.round(frameIndex.get()) === i) {
+          drawImage(img);
+        }
+      };
+      img.src = getFramePath(i);
+      loadedImages.push(img);
+    }
+    setImages(loadedImages);
+  }, [drawImage, frameIndex]);
 
   useMotionValueEvent(frameIndex, "change", (latest) => {
     const currentFrame = Math.round(latest);
     if (images[currentFrame] && images[currentFrame].complete) {
-      drawImage(images[currentFrame]);
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      animationFrameRef.current = requestAnimationFrame(() => {
+        drawImage(images[currentFrame]);
+      });
     }
   });
 
@@ -100,8 +122,13 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
     }
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [images, frameIndex]);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [drawImage, images, frameIndex]);
 
   return (
     <div id="pocetna" ref={containerRef} className="relative h-[250vh] bg-[#060812]">

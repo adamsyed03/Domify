@@ -136,7 +136,7 @@ export function Hero({ scrollProgress }: HeroProps) {
                 </div>
 
                 <div className="hidden justify-center gap-8 pt-3 text-sm text-white/75 md:flex">
-                  {['✓ Sigurna kupovina', '✓ 2 godine garancije', '✓ Podrska pri instalaciji'].map((text) => (
+                  {['✓ Sigurna kupovina', '✓ 2 godine garancije', '✓ Podrška pri instalaciji'].map((text) => (
                     <div key={text}>{text}</div>
                   ))}
                 </div>

@@ -39,7 +39,7 @@ export default function App() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between md:h-24">
             <div className="flex items-center">
-              <img src={domifyLogo} alt="Domify" className="h-20 w-auto drop-shadow-2xl md:h-32" />
+              <img src={domifyLogo} alt="Domify" className="h-12 w-auto drop-shadow-2xl md:h-20" />
             </div>
 
             {/* Desktop Navigation */}
