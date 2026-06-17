@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MotionValue, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 
-const FRAME_COUNT = 96;
+const FRAME_COUNT = 18;
+const START_FRAME = 24;
+const FRAME_STEP = 1;
 
 const getFramePath = (index: number) => {
-  const paddedIndex = index.toString().padStart(2, '0');
+  const paddedIndex = (START_FRAME + index * FRAME_STEP).toString().padStart(2, '0');
   return `${import.meta.env.BASE_URL}sequence/frame_${paddedIndex}_delay-0.041s.webp`;
 };
 
@@ -131,13 +133,13 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
   }, [drawImage, images, frameIndex]);
 
   return (
-    <div id="pocetna" ref={containerRef} className="relative h-[250vh] bg-[#060812]">
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+    <div id="pocetna" ref={containerRef} className="relative h-[145vh] bg-[#07111f]">
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#07111f]">
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#060812]/35 via-transparent to-[#060812]/70" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(7,17,31,0.35)_0%,rgba(7,17,31,0.22)_42%,rgba(7,17,31,0.82)_76%,#07111f_100%)]" />
         <div className="relative z-10 h-full">
           {typeof children === 'function' ? children(scrollYProgress) : children}
         </div>

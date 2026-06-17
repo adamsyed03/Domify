@@ -1,215 +1,176 @@
 import { motion } from 'motion/react';
-import { Check, Shield, Smartphone, Bell } from 'lucide-react';
+import { Check, ChevronDown, Package, PlayCircle, Smartphone, Wifi, Wrench } from 'lucide-react';
 import productImage from '../../imports/image-4.png';
 
+const steps = [
+  {
+    icon: Wrench,
+    title: 'Montiraš zvono',
+    text: 'Postaviš ga kod ulaznih vrata uz nosač i šrafove iz pakovanja.',
+  },
+  {
+    icon: Wifi,
+    title: 'Povežeš na Wi-Fi',
+    text: 'Povežeš zvono na kućni Wi-Fi signal kod ulaza.',
+  },
+  {
+    icon: Smartphone,
+    title: 'Gledaš preko aplikacije',
+    text: 'Kada neko pozvoni, obaveštenje stiže direktno na telefon.',
+  },
+];
+
+const boxItems = [
+  'Pametno video zvono',
+  'Nosač',
+  'Šrafovi',
+  'Uputstvo',
+  'USB-C kabl',
+  'Zvučnik za utičnicu',
+];
+
+const faqs = [
+  {
+    question: 'Da li radi na iPhone i Android telefonu?',
+    answer: 'Da, povezuje se sa aplikacijom na telefonu.',
+  },
+  {
+    question: 'Da li mora da se poveže na Wi-Fi?',
+    answer: 'Da, potreban je Wi-Fi signal kod ulaznih vrata.',
+  },
+  {
+    question: 'Da li mogu da pričam sa kurirom?',
+    answer: 'Da, zvono ima dvosmerni audio.',
+  },
+  {
+    question: 'Da li radi noću?',
+    answer: 'Da, ima noćni vid.',
+  },
+  {
+    question: 'Kako se plaća?',
+    answer: 'Plaćanje pouzećem prilikom dostave.',
+  },
+  {
+    question: 'Koliko traje dostava?',
+    answer: 'Dostava širom Srbije. Tačan rok dostave dodati ovde.',
+  },
+];
+
 export function ProductSection() {
-  const benefits = [
-    'Jednostavna instalacija - spremno za 10 minuta',
-    'Kompatibilno sa svim pametnim telefonima',
-    'Besplatna aplikacija za iOS i Android',
-    'Push notifikacije u realnom vremenu',
-    'Vodootporno kućište (IP65)',
-    'Garantovana podrška 2 godine',
-  ];
-
   return (
-    <section id="proizvod" className="py-20 bg-white relative overflow-hidden max-md:py-10">
-      {/* Animated background */}
-      <motion.div
-        animate={{
-          rotate: [0, 360],
-        }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-[#7fff00]/5 to-blue-500/5 rounded-full blur-3xl"
-      />
+    <section id="proizvod" className="relative overflow-hidden bg-white py-16 max-md:py-10">
+      <div className="absolute right-0 top-0 h-72 w-72 rounded-full bg-[#7fff00]/10 blur-3xl" />
+      <div className="absolute bottom-40 left-0 h-72 w-72 rounded-full bg-sky-200/25 blur-3xl" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 max-md:px-3">
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-md:grid-cols-1 max-md:gap-5">
-          {/* Product Image */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, type: "spring", stiffness: 80 }}
-            className="relative max-md:order-2 max-md:mx-auto max-md:w-full max-md:max-w-[340px]"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.45 }}
           >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
-              className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl p-4 md:p-6 relative overflow-hidden max-md:rounded-2xl max-md:p-3"
-            >
-              <motion.img
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 0.4 }}
-                src={productImage}
-                alt="Domify pametno video zvono"
-                className="relative z-10 w-full h-auto rounded-2xl shadow-2xl max-md:rounded-lg"
-              />
-
-              {/* Animated decorative elements */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.5, 0.3],
-                }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="absolute top-0 right-0 w-64 h-64 bg-[#7fff00]/10 rounded-full blur-3xl"
-              />
-              <motion.div
-                animate={{
-                  scale: [1.2, 1, 1.2],
-                  opacity: [0.2, 0.4, 0.2],
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-                className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"
-              />
-            </motion.div>
-
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#16a34a]">Kako funkcioniše</p>
+            <h2 className="mt-3 text-3xl font-extrabold leading-tight text-gray-950 md:text-5xl">
+              Od montaže do odgovora na telefon u 2 minuta.
+            </h2>
+            <p className="mt-4 max-w-xl text-base leading-7 text-gray-600 md:text-lg">
+              Domify je napravljen da reši jednostavan problem: da znaš ko je ispred vrata i kada nisi kod kuće.
+            </p>
           </motion.div>
 
-          {/* Product Details */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="space-y-6 max-md:contents"
-          >
-            <div className="max-md:order-1 max-md:text-center">
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="text-gray-500 mb-2 uppercase tracking-wider text-sm font-medium max-md:mb-1 max-md:text-[11px] max-md:tracking-wide"
-              >
-                Premium Kvalitet
-              </motion.p>
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
+          <div className="grid gap-3">
+            {steps.map(({ icon: Icon, title, text }, index) => (
+              <motion.article
+                key={title}
+                initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-                className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 max-md:mb-3 max-md:text-3xl max-md:leading-tight"
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.42, delay: index * 0.08 }}
+                className="flex items-start gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
               >
-                Pametno Video Zvono
-                <br />
-                <span className="text-[#7fff00]">Nova Generacija</span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-                className="text-gray-600 text-lg max-md:mx-auto max-md:max-w-sm max-md:text-sm max-md:leading-snug"
-              >
-                Zaštitite svoj dom sa najnovijom tehnologijom. Naše pametno video zvono kombinuje elegantni dizajn sa naprednim funkcijama sigurnosti.
-              </motion.p>
-            </div>
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#7fff00]/20 text-[#1a1f2e]">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-gray-950">{title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">{text}</p>
+                </div>
+              </motion.article>
+            ))}
+            <motion.a
+              href="https://www.instagram.com/p/DZqI_-QiE_b/"
+              target="_blank"
+              rel="noreferrer"
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.42, delay: 0.24 }}
+              className="mx-auto mt-3 inline-flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-gray-950 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-gray-900/10"
+            >
+              <PlayCircle className="h-5 w-5 text-[#7fff00]" />
+              Video tutorijal
+            </motion.a>
+          </div>
+        </div>
 
-            {/* Benefits List with staggered animation */}
-            <div className="space-y-3 max-md:order-3 max-md:grid max-md:grid-cols-2 max-md:gap-x-3 max-md:gap-y-3 max-md:space-y-0">
-              {benefits.map((benefit, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5 + index * 0.1 }}
-                  whileHover={{ x: 5 }}
-                  className="flex items-start gap-3 max-md:gap-1.5"
-                >
-                  <motion.div
-                    whileHover={{ rotate: 360, scale: 1.2 }}
-                    transition={{ duration: 0.5 }}
-                    className="w-6 h-6 bg-[#7fff00]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 max-md:h-4 max-md:w-4"
-                  >
-                    <Check className="w-4 h-4 text-[#7fff00] max-md:h-3 max-md:w-3" />
-                  </motion.div>
-                  <span className="text-gray-700 max-md:text-xs max-md:leading-snug">{benefit}</span>
-                </motion.div>
+        <div className="mt-14 grid gap-8 lg:grid-cols-2 lg:items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.45 }}
+            className="mx-auto w-full max-w-[420px] rounded-3xl bg-gray-100 p-4 lg:mx-0"
+          >
+            <img
+              src={productImage}
+              alt="Domify pametno video zvono i delovi iz pakovanja"
+              className="w-full rounded-2xl shadow-xl"
+              loading="lazy"
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.45 }}
+          >
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#16a34a]">U pakovanju</p>
+            <h2 className="mt-3 text-3xl font-extrabold text-gray-950">Šta dobijaš u kutiji</h2>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {boxItems.map((item) => (
+                <div key={item} className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-900">
+                    <Package className="h-5 w-5" />
+                  </div>
+                  <span className="font-bold text-gray-900">{item}</span>
+                </div>
               ))}
             </div>
-
-            {/* Price and CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 1.1 }}
-              className="bg-gray-50 rounded-2xl p-6 space-y-4 max-md:order-4 max-md:mx-auto max-md:w-full max-md:max-w-sm max-md:rounded-2xl max-md:p-5 max-md:space-y-3 max-md:text-center"
-            >
-              <div className="flex items-baseline gap-3 max-md:justify-center max-md:gap-2">
-                <motion.span
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  whileInView={{ scale: 1, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 1.2, type: "spring", stiffness: 200 }}
-                  className="text-4xl font-extrabold text-gray-900 max-md:text-3xl"
-                >
-                  2.999 RSD
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 1.3 }}
-                  className="text-xl text-gray-400 line-through max-md:text-sm"
-                >
-                  4.299 RSD
-                </motion.span>
-              </div>
-              <motion.a
-                href="#kontakt"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="block text-center w-full bg-[#7fff00] text-[#1a1f2e] py-4 rounded-full hover:bg-[#6eee00] transition-colors font-bold text-lg shadow-lg shadow-[#7fff00]/20 max-md:py-3 max-md:text-sm"
-              >
-                Naruči preko Instagrama
-              </motion.a>
-              <div className="flex items-center justify-center gap-6 text-sm text-gray-600 max-md:gap-2 max-md:text-[10px]">
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  className="flex items-center gap-2"
-                >
-                  <Shield className="w-4 h-4 max-md:h-3 max-md:w-3" />
-                  <span>Sigurna kupovina</span>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  className="flex items-center gap-2"
-                >
-                  <Bell className="w-4 h-4 max-md:h-3 max-md:w-3" />
-                  <span>Brza dostava</span>
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Trust badges */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 1.4 }}
-              className="flex items-center gap-4 pt-4 max-md:order-5 max-md:justify-center max-md:gap-4 max-md:pt-0"
-            >
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="flex items-center gap-2 text-sm text-gray-600 max-md:gap-1 max-md:text-[10px]"
-              >
-                <Smartphone className="w-5 h-5 max-md:h-3 max-md:w-3" />
-                <span>iOS & Android</span>
-              </motion.div>
-              <div className="w-px h-6 bg-gray-300 max-md:h-4"></div>
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="flex items-center gap-2 text-sm text-gray-600 max-md:gap-1 max-md:text-[10px]"
-              >
-                <Shield className="w-5 h-5 max-md:h-3 max-md:w-3" />
-                <span>2 godine garancije</span>
-              </motion.div>
-            </motion.div>
           </motion.div>
+        </div>
+
+        <div className="mt-14 grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#16a34a]">FAQ</p>
+            <h2 className="mt-3 text-3xl font-extrabold text-gray-950">Česta pitanja</h2>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              Kratki odgovori na pitanja pre poručivanja.
+            </p>
+          </div>
+
+          <div className="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white shadow-sm">
+            {faqs.map((faq) => (
+              <details key={faq.question} className="group p-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-gray-950">
+                  {faq.question}
+                  <ChevronDown className="h-5 w-5 shrink-0 text-gray-400 group-open:rotate-180" />
+                </summary>
+                <p className="mt-3 text-sm leading-6 text-gray-600">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </div>
     </section>

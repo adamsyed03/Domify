@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Menu, X, ShoppingCart, Instagram } from 'lucide-react';
+import { Menu, X, ShoppingCart, Instagram, Phone, PhoneOff } from 'lucide-react';
 import { Hero } from './components/Hero';
 import { Features } from './components/Features';
 import { ProductSection } from './components/ProductSection';
@@ -11,6 +11,8 @@ import domifyLogo from '../../Domifylogo.png';
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pastLanding, setPastLanding] = useState(false);
+  const [callPopupOpen, setCallPopupOpen] = useState(false);
+  const [callPopupDismissed, setCallPopupDismissed] = useState(false);
 
   useEffect(() => {
     const updateHeaderStyle = () => {
@@ -27,6 +29,25 @@ export default function App() {
       window.removeEventListener('resize', updateHeaderStyle);
     };
   }, []);
+
+  useEffect(() => {
+    if (callPopupDismissed) return;
+
+    const productSection = document.getElementById('proizvod');
+    if (!productSection) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setCallPopupOpen(true);
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(productSection);
+    return () => observer.disconnect();
+  }, [callPopupDismissed]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -91,7 +112,7 @@ export default function App() {
       <ProductSection />
 
       {/* CTA Section */}
-      <section className="bg-[#1a1f2e] text-white py-16 md:py-20 relative overflow-hidden max-md:py-10">
+      <section id="poruci" className="bg-[#1a1f2e] text-white py-16 md:py-20 relative overflow-hidden max-md:py-10">
         {/* Animated background */}
         <motion.div
           animate={{
@@ -110,7 +131,7 @@ export default function App() {
             transition={{ duration: 0.6 }}
             className="text-2xl md:text-4xl font-bold mb-6 max-md:mb-3"
           >
-            Zaštitite Svoj Dom Danas
+            Unapredite Svoj Dom Danas
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
@@ -155,6 +176,76 @@ export default function App() {
       </section>
 
       <Footer />
+
+      {callPopupOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.96 }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            x: [0, -4, 4, -3, 3, 0],
+          }}
+          transition={{
+            opacity: { duration: 0.25 },
+            y: { duration: 0.25 },
+            scale: { duration: 0.25 },
+            x: { duration: 0.45, repeat: Infinity, repeatDelay: 3 },
+          }}
+          className="fixed bottom-4 right-4 z-[60] w-[min(92vw,320px)] overflow-hidden rounded-2xl border border-white/15 bg-[#0f172a] text-white shadow-2xl shadow-black/30 max-md:bottom-3 max-md:right-3"
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setCallPopupDismissed(true);
+              setCallPopupOpen(false);
+            }}
+            aria-label="Zatvori poziv"
+            className="absolute right-3 top-3 z-20 rounded-full bg-black/50 p-1.5 text-white backdrop-blur"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
+          <div className="relative h-52 bg-black">
+            <img
+              src="/postman.png"
+              alt="Domify prikaz poziva sa ulaznih vrata"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/75" />
+            <div className="absolute bottom-3 left-3 right-10">
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Domify video zvono</p>
+              <p className="mt-1 text-lg font-extrabold leading-tight">Neko je ispred vrata</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 p-4">
+            <button
+              type="button"
+              onClick={() => {
+                setCallPopupDismissed(true);
+                setCallPopupOpen(false);
+              }}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-red-500 px-4 py-3 text-sm font-bold text-white"
+            >
+              <PhoneOff className="h-4 w-4" />
+              Odbij
+            </button>
+            <a
+              href="#poruci"
+              onClick={() => {
+                setCallPopupDismissed(true);
+                setCallPopupOpen(false);
+              }}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#7fff00] px-4 py-3 text-sm font-bold text-[#1a1f2e]"
+            >
+              <Phone className="h-4 w-4" />
+              Odgovori
+            </a>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

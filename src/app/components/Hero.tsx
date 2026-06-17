@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, MotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
-import { ShoppingCart, Play } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 
 type HeroProps = {
   scrollProgress: MotionValue<number>;
@@ -40,6 +40,7 @@ function ScrollReveal({
 
 export function Hero({ scrollProgress }: HeroProps) {
   const underlineScale = useTransform(scrollProgress, [0.04, 0.14], [0, 1]);
+  const bottomFadeOpacity = useTransform(scrollProgress, [0.58, 0.9], [0, 1]);
 
   return (
     <section className="relative flex h-full items-center justify-center overflow-hidden text-white">
@@ -69,29 +70,15 @@ export function Hero({ scrollProgress }: HeroProps) {
               className="w-full"
             >
               <h1 className="text-4xl font-extrabold leading-tight drop-shadow-2xl md:text-6xl lg:text-7xl">
-                Pametno Video Zvono
-                <br />
+                Pametno video zvono koje ti pokazuje ko je{' '}
                 <span className="relative inline-block pb-3 text-[#7fff00]">
-                  za Vaš Dom
+                  ispred vrata
                   <motion.span
                     style={{ scaleX: underlineScale }}
                     className="absolute bottom-0 left-0 right-0 h-1 origin-left rounded-full bg-[#7fff00]"
                   />
                 </span>
               </h1>
-            </ScrollReveal>
-
-            <ScrollReveal
-              progress={scrollProgress}
-              range={[0.18, 0.36]}
-              className="mx-auto max-w-3xl"
-            >
-              <p className="text-2xl font-semibold leading-snug text-white drop-shadow-2xl md:text-4xl">
-                Vidite ko je na vratima. Bilo gde, bilo kada.
-              </p>
-              <p className="mx-auto mt-5 max-w-2xl text-base font-medium text-white/85 drop-shadow-lg md:text-xl">
-                HD video kvalitet sa dvosmernom komunikacijom.
-              </p>
             </ScrollReveal>
 
             <ScrollReveal
@@ -103,40 +90,30 @@ export function Hero({ scrollProgress }: HeroProps) {
               <div className="flex flex-col items-center gap-6">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="inline-block rounded-full border border-[#7fff00]/60 bg-black/35 px-6 py-3 shadow-2xl backdrop-blur-md"
+                  className="rounded-2xl border border-[#7fff00]/60 bg-black/35 px-6 py-4 shadow-2xl backdrop-blur-md"
                 >
-                  <span className="mr-3 text-sm text-white/60 line-through">4.299 RSD</span>
-                  <span className="text-2xl font-extrabold text-[#7fff00]">2.999 RSD</span>
+                  <div className="text-3xl font-extrabold text-[#7fff00]">2.999 RSD</div>
+                  <div className="mt-2 text-sm font-semibold text-white/85">
+                    Na stanju · Dostava širom Srbije · Plaćanje pouzećem
+                  </div>
                 </motion.div>
 
                 <div className="flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row sm:items-center">
                   <motion.a
-                    href="#kontakt"
+                    href="https://ig.me/m/domify_rs"
+                    target="_blank"
+                    rel="noreferrer"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#7fff00] px-8 py-4 font-bold text-[#1a1f2e] shadow-lg shadow-[#7fff00]/20 transition-colors hover:bg-[#6eee00] sm:w-auto"
                   >
                     <ShoppingCart className="h-5 w-5" />
-                    Naruči Sada
-                  </motion.a>
-                  <motion.a
-                    href="#karakteristike"
-                    whileHover={{ scale: 1.05, borderColor: 'rgba(127, 255, 0, 0.5)' }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/40 bg-black/20 px-8 py-4 font-bold text-white backdrop-blur-md transition-all hover:bg-white/10 sm:w-auto"
-                  >
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      <Play className="h-5 w-5 fill-current" />
-                    </motion.div>
-                    Saznaj Više
+                    Poruči odmah
                   </motion.a>
                 </div>
 
-                <div className="hidden justify-center gap-8 pt-3 text-sm text-white/75 md:flex">
-                  {['✓ Sigurna kupovina', '✓ 2 godine garancije', '✓ Podrška pri instalaciji'].map((text) => (
+                <div className="flex flex-col justify-center gap-3 pt-3 text-sm font-semibold text-white/80 sm:flex-row sm:gap-6">
+                  {['Kamera + noćni vid', 'Dvosmerni razgovor', 'Detekcija pokreta'].map((text) => (
                     <div key={text}>{text}</div>
                   ))}
                 </div>
@@ -147,6 +124,10 @@ export function Hero({ scrollProgress }: HeroProps) {
       </div>
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(6,8,18,0.18)_48%,rgba(6,8,18,0.72)_100%)]" />
+      <motion.div
+        style={{ opacity: bottomFadeOpacity }}
+        className="pointer-events-none absolute inset-x-0 -bottom-px h-[31vh] bg-gradient-to-b from-transparent via-[#07111f]/82 to-[#07111f]"
+      />
     </section>
   );
 }
