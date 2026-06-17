@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, MotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
+import { instagramOrderUrl, openInstagramOrder } from '../../lib/instagram';
 
 type HeroProps = {
   scrollProgress: MotionValue<number>;
@@ -94,15 +95,17 @@ export function Hero({ scrollProgress }: HeroProps) {
                 >
                   <div className="text-3xl font-extrabold text-[#7fff00]">2.999 RSD</div>
                   <div className="mt-2 text-sm font-semibold text-white/85">
-                    Na stanju · Dostava širom Srbije · Plaćanje pouzećem
+                    Spremno za slanje · Dostava širom Srbije · Plaćanje pouzećem
                   </div>
                 </motion.div>
 
                 <div className="flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row sm:items-center">
                   <motion.a
-                    href="https://ig.me/m/domify_rs"
-                    target="_blank"
-                    rel="noreferrer"
+                    href={instagramOrderUrl}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      openInstagramOrder();
+                    }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#7fff00] px-8 py-4 font-bold text-[#1a1f2e] shadow-lg shadow-[#7fff00]/20 transition-colors hover:bg-[#6eee00] sm:w-auto"
@@ -110,12 +113,6 @@ export function Hero({ scrollProgress }: HeroProps) {
                     <ShoppingCart className="h-5 w-5" />
                     Poruči odmah
                   </motion.a>
-                </div>
-
-                <div className="flex flex-col justify-center gap-3 pt-3 text-sm font-semibold text-white/80 sm:flex-row sm:gap-6">
-                  {['Kamera + noćni vid', 'Dvosmerni razgovor', 'Detekcija pokreta'].map((text) => (
-                    <div key={text}>{text}</div>
-                  ))}
                 </div>
               </div>
             </ScrollReveal>

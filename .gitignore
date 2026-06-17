@@ -3,3 +3,6 @@ dist
 *.log
 dev.out.log
 dev.err.log
+.env
+.env.local
+.env.*.local

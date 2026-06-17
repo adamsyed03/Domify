@@ -7,6 +7,7 @@ import { ProductSection } from './components/ProductSection';
 import { Footer } from './components/Footer';
 import ScrollyCanvas from './components/ScrollyCanvas';
 import domifyLogo from '../../Domifylogo.png';
+import { instagramOrderUrl, openInstagramOrder } from '../lib/instagram';
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -150,9 +151,11 @@ export default function App() {
             className="flex flex-col sm:flex-row gap-4 justify-center items-center max-md:gap-3"
           >
             <motion.a
-              href="https://ig.me/m/domify_rs"
-              target="_blank"
-              rel="noreferrer"
+              href={instagramOrderUrl}
+              onClick={(event) => {
+                event.preventDefault();
+                openInstagramOrder();
+              }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="w-full sm:w-auto justify-center bg-[#7fff00] text-[#1a1f2e] px-8 py-3 rounded-full hover:bg-[#6eee00] transition-colors font-bold inline-flex items-center gap-2 shadow-lg shadow-[#7fff00]/20 max-md:w-auto max-md:px-6 max-md:py-2.5 max-md:text-sm"
