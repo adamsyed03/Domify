@@ -1,6 +1,6 @@
 export function initPostHog() {
   const apiKey = import.meta.env.VITE_POSTHOG_KEY;
-  const apiHost = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com';
+  const apiHost = import.meta.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com';
 
   if (!apiKey) {
     return;

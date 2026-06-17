@@ -37,17 +37,42 @@ export default function App() {
     const productSection = document.getElementById('proizvod');
     if (!productSection) return;
 
+    const maybeShowCallPopup = () => {
+      if (callPopupDismissed) return;
+
+      const rect = productSection.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const reachedProductSection = rect.top <= viewportHeight * 0.82 && rect.bottom >= viewportHeight * 0.12;
+
+      if (reachedProductSection) {
+        setCallPopupOpen(true);
+      }
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setCallPopupOpen(true);
         }
       },
-      { threshold: 0.35 }
+      { rootMargin: '0px 0px -35% 0px', threshold: 0 }
     );
 
     observer.observe(productSection);
-    return () => observer.disconnect();
+
+    const fallbackTimer = window.setTimeout(maybeShowCallPopup, 600);
+    maybeShowCallPopup();
+    window.addEventListener('scroll', maybeShowCallPopup, { passive: true });
+    window.addEventListener('resize', maybeShowCallPopup);
+    window.addEventListener('pageshow', maybeShowCallPopup);
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(fallbackTimer);
+      window.removeEventListener('scroll', maybeShowCallPopup);
+      window.removeEventListener('resize', maybeShowCallPopup);
+      window.removeEventListener('pageshow', maybeShowCallPopup);
+    };
   }, [callPopupDismissed]);
 
   return (
