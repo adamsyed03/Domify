@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Menu, X, ShoppingCart, Instagram, Phone, PhoneOff, PlayCircle } from 'lucide-react';
 import { Hero } from './components/Hero';
@@ -7,30 +7,12 @@ import { ProductSection } from './components/ProductSection';
 import { Footer } from './components/Footer';
 import { AdminPanel } from './components/AdminPanel';
 import ScrollyCanvas from './components/ScrollyCanvas';
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from './components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from './components/ui/dialog';
 import domifyLogo from '../../Domifylogo.png';
 import productImage from '../imports/image-4.png';
+import { instagramOrderUrl, openInstagramOrder } from '../lib/instagram';
 
 const tutorialVideoSrc = '/tutorial.mp4';
-const initialOrderForm = {
-  firstName: '',
-  lastName: '',
-  houseFlatNumber: '',
-  street: '',
-  city: '',
-  country: 'Srbija',
-  phoneNumber: '',
-};
-
-async function readApiResponse(response: Response) {
-  const contentType = response.headers.get('content-type') || '';
-
-  if (contentType.includes('application/json')) {
-    return response.json();
-  }
-
-  throw new Error('Server nije vratio API odgovor. Proverite da li je backend deployovan zajedno sa sajtom.');
-}
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -38,44 +20,9 @@ export default function App() {
   const [callPopupOpen, setCallPopupOpen] = useState(false);
   const [callPopupDismissed, setCallPopupDismissed] = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
-  const [orderFormOpen, setOrderFormOpen] = useState(false);
-  const [orderSubmitted, setOrderSubmitted] = useState(false);
-  const [orderSubmitting, setOrderSubmitting] = useState(false);
-  const [orderSubmitError, setOrderSubmitError] = useState('');
-  const [orderForm, setOrderForm] = useState(initialOrderForm);
-
-  const openOrderForm = () => {
-    setOrderSubmitted(false);
-    setOrderSubmitError('');
-    setOrderFormOpen(true);
-  };
-
-  const handleOrderSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setOrderSubmitting(true);
-    setOrderSubmitError('');
-
-    try {
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderForm),
-      });
-      const data = await readApiResponse(response);
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Porudžbina nije poslata.');
-      }
-
-      setOrderSubmitted(true);
-      setOrderForm(initialOrderForm);
-    } catch (error) {
-      setOrderSubmitError(error instanceof Error ? error.message : 'Porudžbina nije poslata.');
-    } finally {
-      setOrderSubmitting(false);
-    }
+  const openInstagramAndCloseMenu = () => {
+    setMobileMenuOpen(false);
+    openInstagramOrder();
   };
 
   useEffect(() => {
@@ -175,7 +122,7 @@ export default function App() {
               <a href="#kontakt" className="hover:text-[#7fff00] transition-colors font-semibold">Kontakt</a>
               <button
                 type="button"
-                onClick={openOrderForm}
+                onClick={openInstagramOrder}
                 className="rounded-full bg-[#7fff00] px-6 py-2 font-bold text-[#1a1f2e] transition-colors hover:bg-[#6eee00]"
               >
                 Kupi Sada
@@ -212,10 +159,7 @@ export default function App() {
               <a href="#kontakt" className="block py-2 hover:text-[#7fff00] transition-colors font-semibold">Kontakt</a>
               <button
                 type="button"
-                onClick={() => {
-                  openOrderForm();
-                  setMobileMenuOpen(false);
-                }}
+                onClick={openInstagramAndCloseMenu}
                 className="block text-center w-full bg-[#7fff00] text-[#1a1f2e] px-6 py-2 rounded-full hover:bg-[#6eee00] transition-colors font-bold"
               >
                 Kupi Sada
@@ -227,7 +171,7 @@ export default function App() {
 
       {/* Main Content */}
       <ScrollyCanvas>
-        {(scrollProgress) => <Hero scrollProgress={scrollProgress} onOpenOrderForm={openOrderForm} />}
+        {(scrollProgress) => <Hero scrollProgress={scrollProgress} />}
       </ScrollyCanvas>
       <Features />
       <ProductSection onOpenTutorial={() => setTutorialOpen(true)} />
@@ -270,16 +214,19 @@ export default function App() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center max-md:gap-3"
           >
-            <motion.button
-              type="button"
-              onClick={openOrderForm}
+            <motion.a
+              href={instagramOrderUrl}
+              onClick={(event) => {
+                event.preventDefault();
+                openInstagramOrder();
+              }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="w-full sm:w-auto justify-center bg-[#7fff00] text-[#1a1f2e] px-8 py-3 rounded-full hover:bg-[#6eee00] transition-colors font-bold inline-flex items-center gap-2 shadow-lg shadow-[#7fff00]/20 max-md:w-auto max-md:px-6 max-md:py-2.5 max-md:text-sm"
             >
               <ShoppingCart className="w-5 h-5" />
               Naruči za 2.999 RSD
-            </motion.button>
+            </motion.a>
             <motion.a
               href="https://www.instagram.com/domify_rs/"
               target="_blank"
@@ -317,151 +264,6 @@ export default function App() {
               Tvoj browser ne podržava video reprodukciju.
             </video>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={orderFormOpen} onOpenChange={setOrderFormOpen}>
-        <DialogContent className="max-h-[94vh] overflow-y-auto border-0 bg-white p-0 text-gray-950 shadow-2xl max-sm:w-[calc(100vw-1.25rem)] max-sm:max-w-none max-sm:rounded-2xl sm:max-w-[560px]">
-          <div className="flex items-center gap-3 bg-[#1a1f2e] px-5 py-4 pr-12 text-white sm:gap-4 sm:px-6 sm:py-5 sm:pr-14">
-            <img src={domifyLogo} alt="Domify" className="h-10 w-auto shrink-0 sm:h-14" />
-            <div className="min-w-0">
-              <DialogTitle className="text-xl font-extrabold leading-tight sm:text-2xl">Porudžbina</DialogTitle>
-              <DialogDescription className="mt-1 text-sm leading-5 text-white/75">
-                Unesite podatke za dostavu. Plaćanje je pouzećem.
-            </DialogDescription>
-            </div>
-          </div>
-
-          {orderSubmitted ? (
-            <div className="px-6 py-8 text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#7fff00] text-2xl font-extrabold text-[#1a1f2e]">
-                OK
-              </div>
-              <h3 className="mt-4 text-xl font-extrabold text-gray-950">Hvala na porudžbini!</h3>
-              <p className="mt-2 text-sm leading-6 text-gray-600">
-                Vaši podaci su uneti. Kontaktiraćemo vas uskoro radi potvrde porudžbine.
-              </p>
-              <button
-                type="button"
-                onClick={() => setOrderFormOpen(false)}
-                className="mt-6 inline-flex items-center justify-center rounded-full bg-[#1a1f2e] px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-[#283247]"
-              >
-                Zatvori
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleOrderSubmit} className="grid gap-4 px-5 py-5 sm:px-6 sm:py-6">
-              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-                <label className="grid gap-2 text-sm font-bold text-gray-800">
-                  Ime
-                  <input
-                    type="text"
-                    name="firstName"
-                    required
-                    autoComplete="given-name"
-                    value={orderForm.firstName}
-                    onChange={(event) => setOrderForm({ ...orderForm, firstName: event.target.value })}
-                    className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-medium text-gray-950 outline-none transition focus:border-[#7fff00] focus:bg-white focus:ring-2 focus:ring-[#7fff00]/30"
-                  />
-                </label>
-
-                <label className="grid gap-2 text-sm font-bold text-gray-800">
-                  Prezime
-                  <input
-                    type="text"
-                    name="lastName"
-                    required
-                    autoComplete="family-name"
-                    value={orderForm.lastName}
-                    onChange={(event) => setOrderForm({ ...orderForm, lastName: event.target.value })}
-                    className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-medium text-gray-950 outline-none transition focus:border-[#7fff00] focus:bg-white focus:ring-2 focus:ring-[#7fff00]/30"
-                  />
-                </label>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-[0.72fr_1.28fr] sm:gap-4">
-                <label className="grid gap-2 text-sm font-bold text-gray-800">
-                  Broj kuće/stana
-                  <input
-                    type="text"
-                    name="houseFlatNumber"
-                    required
-                    autoComplete="address-line2"
-                    value={orderForm.houseFlatNumber}
-                    onChange={(event) => setOrderForm({ ...orderForm, houseFlatNumber: event.target.value })}
-                    className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-medium text-gray-950 outline-none transition focus:border-[#7fff00] focus:bg-white focus:ring-2 focus:ring-[#7fff00]/30"
-                  />
-                </label>
-
-                <label className="grid gap-2 text-sm font-bold text-gray-800">
-                  Ulica
-                  <input
-                    type="text"
-                    name="street"
-                    required
-                    autoComplete="address-line1"
-                    value={orderForm.street}
-                    onChange={(event) => setOrderForm({ ...orderForm, street: event.target.value })}
-                    className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-medium text-gray-950 outline-none transition focus:border-[#7fff00] focus:bg-white focus:ring-2 focus:ring-[#7fff00]/30"
-                  />
-                </label>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-                <label className="grid gap-2 text-sm font-bold text-gray-800">
-                  Grad
-                  <input
-                    type="text"
-                    name="city"
-                    required
-                    autoComplete="address-level2"
-                    value={orderForm.city}
-                    onChange={(event) => setOrderForm({ ...orderForm, city: event.target.value })}
-                    className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-medium text-gray-950 outline-none transition focus:border-[#7fff00] focus:bg-white focus:ring-2 focus:ring-[#7fff00]/30"
-                  />
-                </label>
-
-                <label className="grid gap-2 text-sm font-bold text-gray-800">
-                  Država
-                  <input
-                    type="text"
-                    name="country"
-                    required
-                    autoComplete="country-name"
-                    value={orderForm.country}
-                    onChange={(event) => setOrderForm({ ...orderForm, country: event.target.value })}
-                    className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-medium text-gray-950 outline-none transition focus:border-[#7fff00] focus:bg-white focus:ring-2 focus:ring-[#7fff00]/30"
-                  />
-                </label>
-              </div>
-
-              <label className="grid gap-2 text-sm font-bold text-gray-800">
-                Broj telefona
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    required
-                    autoComplete="tel"
-                    value={orderForm.phoneNumber}
-                    onChange={(event) => setOrderForm({ ...orderForm, phoneNumber: event.target.value })}
-                    className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-medium text-gray-950 outline-none transition focus:border-[#7fff00] focus:bg-white focus:ring-2 focus:ring-[#7fff00]/30"
-                  />
-                </label>
-
-              <button
-                type="submit"
-                disabled={orderSubmitting}
-                className="mt-2 inline-flex h-12 items-center justify-center rounded-full bg-[#7fff00] px-6 text-base font-extrabold text-[#1a1f2e] shadow-lg shadow-[#7fff00]/20 transition-colors hover:bg-[#6eee00] disabled:cursor-not-allowed disabled:opacity-70 sm:h-14"
-              >
-                {orderSubmitting ? 'Slanje...' : 'Pošalji porudžbinu'}
-              </button>
-              {orderSubmitError && (
-                <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-                  {orderSubmitError}
-                </p>
-              )}
-            </form>
-          )}
         </DialogContent>
       </Dialog>
 
@@ -525,7 +327,7 @@ export default function App() {
               onClick={() => {
                 setCallPopupDismissed(true);
                 setCallPopupOpen(false);
-                openOrderForm();
+                openInstagramOrder();
               }}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#7fff00] px-4 py-3 text-sm font-bold text-[#1a1f2e]"
             >
