@@ -1,19 +1,24 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Menu, X, ShoppingCart, Instagram, Phone, PhoneOff } from 'lucide-react';
+import { Menu, X, ShoppingCart, Instagram, Phone, PhoneOff, PlayCircle } from 'lucide-react';
 import { Hero } from './components/Hero';
 import { Features } from './components/Features';
 import { ProductSection } from './components/ProductSection';
 import { Footer } from './components/Footer';
 import ScrollyCanvas from './components/ScrollyCanvas';
+import { Dialog, DialogContent, DialogTitle } from './components/ui/dialog';
 import domifyLogo from '../../Domifylogo.png';
+import productImage from '../imports/image-4.png';
 import { instagramOrderUrl, openInstagramOrder } from '../lib/instagram';
+
+const tutorialVideoSrc = '/tutorial.mp4';
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pastLanding, setPastLanding] = useState(false);
   const [callPopupOpen, setCallPopupOpen] = useState(false);
   const [callPopupDismissed, setCallPopupDismissed] = useState(false);
+  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   useEffect(() => {
     const updateHeaderStyle = () => {
@@ -98,6 +103,13 @@ export default function App() {
               <a href="#pocetna" className="hover:text-[#7fff00] transition-colors font-semibold">Početna</a>
               <a href="#karakteristike" className="hover:text-[#7fff00] transition-colors font-semibold">Karakteristike</a>
               <a href="#proizvod" className="hover:text-[#7fff00] transition-colors font-semibold">Proizvod</a>
+              <button
+                type="button"
+                onClick={() => setTutorialOpen(true)}
+                className="font-semibold transition-colors hover:text-[#7fff00]"
+              >
+                Tutorial
+              </button>
               <a href="#kontakt" className="hover:text-[#7fff00] transition-colors font-semibold">Kontakt</a>
               <a href="#kontakt" className="rounded-full bg-[#7fff00] px-6 py-2 font-bold text-[#1a1f2e] transition-colors hover:bg-[#6eee00]">
                 Kupi Sada
@@ -121,6 +133,16 @@ export default function App() {
               <a href="#pocetna" className="block py-2 hover:text-[#7fff00] transition-colors font-semibold">Početna</a>
               <a href="#karakteristike" className="block py-2 hover:text-[#7fff00] transition-colors font-semibold">Karakteristike</a>
               <a href="#proizvod" className="block py-2 hover:text-[#7fff00] transition-colors font-semibold">Proizvod</a>
+              <button
+                type="button"
+                onClick={() => {
+                  setTutorialOpen(true);
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full py-2 text-left font-semibold transition-colors hover:text-[#7fff00]"
+              >
+                Tutorial
+              </button>
               <a href="#kontakt" className="block py-2 hover:text-[#7fff00] transition-colors font-semibold">Kontakt</a>
               <a href="#kontakt" className="block text-center w-full bg-[#7fff00] text-[#1a1f2e] px-6 py-2 rounded-full hover:bg-[#6eee00] transition-colors font-bold">
                 Kupi Sada
@@ -135,7 +157,7 @@ export default function App() {
         {(scrollProgress) => <Hero scrollProgress={scrollProgress} />}
       </ScrollyCanvas>
       <Features />
-      <ProductSection />
+      <ProductSection onOpenTutorial={() => setTutorialOpen(true)} />
 
       {/* CTA Section */}
       <section id="poruci" className="bg-[#1a1f2e] text-white py-16 md:py-20 relative overflow-hidden max-md:py-10">
@@ -204,6 +226,29 @@ export default function App() {
       </section>
 
       <Footer />
+
+      <Dialog open={tutorialOpen} onOpenChange={setTutorialOpen}>
+        <DialogContent className="border-0 bg-transparent p-0 shadow-none sm:max-w-[min(92vw,420px)]">
+          <DialogTitle className="sr-only">Video tutorijal</DialogTitle>
+          <div className="overflow-hidden rounded-2xl bg-gray-950 shadow-2xl shadow-black/40">
+            <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3 text-white">
+              <PlayCircle className="h-5 w-5 shrink-0 text-[#7fff00]" />
+              <span className="text-sm font-extrabold">Video tutorijal</span>
+            </div>
+            <video
+              className="aspect-[9/16] max-h-[80vh] w-full bg-black object-cover"
+              aria-label="Domify video tutorijal"
+              controls
+              playsInline
+              preload="metadata"
+              poster={productImage}
+            >
+              <source src={tutorialVideoSrc} type="video/mp4" />
+              Tvoj browser ne podržava video reprodukciju.
+            </video>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {callPopupOpen && (
         <motion.div

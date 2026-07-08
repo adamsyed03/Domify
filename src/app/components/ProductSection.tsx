@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Check, ChevronDown, Package, PlayCircle, Smartphone, Wifi, Wrench } from 'lucide-react';
+import { ChevronDown, Package, PlayCircle, Smartphone, Wifi, Wrench } from 'lucide-react';
 import productImage from '../../imports/image-4.png';
 
 const steps = [
@@ -56,7 +56,11 @@ const faqs = [
   },
 ];
 
-export function ProductSection() {
+type ProductSectionProps = {
+  onOpenTutorial: () => void;
+};
+
+export function ProductSection({ onOpenTutorial }: ProductSectionProps) {
   return (
     <section id="proizvod" className="relative overflow-hidden bg-white py-16 max-md:py-10">
       <div className="absolute right-0 top-0 h-72 w-72 rounded-full bg-[#7fff00]/10 blur-3xl" />
@@ -98,19 +102,18 @@ export function ProductSection() {
                 </div>
               </motion.article>
             ))}
-            <motion.a
-              href="https://www.instagram.com/p/DZqI_-QiE_b/"
-              target="_blank"
-              rel="noreferrer"
+            <motion.button
+              type="button"
+              onClick={onOpenTutorial}
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.42, delay: 0.24 }}
-              className="mx-auto mt-3 inline-flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-gray-950 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-gray-900/10"
+              className="mx-auto mt-4 inline-flex items-center justify-center gap-4 rounded-full border border-gray-200 bg-gray-950 px-12 py-6 text-2xl font-extrabold text-white shadow-xl shadow-gray-900/15 max-sm:px-8 max-sm:py-4 max-sm:text-xl"
             >
-              <PlayCircle className="h-5 w-5 text-[#7fff00]" />
+              <PlayCircle className="h-10 w-10 text-[#7fff00] max-sm:h-8 max-sm:w-8" />
               Video tutorijal
-            </motion.a>
+            </motion.button>
           </div>
         </div>
 
