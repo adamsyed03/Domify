@@ -25,6 +25,16 @@ function formatDate(value: string) {
   }
 }
 
+async function readApiResponse(response: Response) {
+  const contentType = response.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
+    return response.json();
+  }
+
+  throw new Error('Server nije vratio API odgovor. Proverite da li je backend deployovan zajedno sa sajtom.');
+}
+
 export function AdminPanel() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +50,7 @@ export function AdminPanel() {
       const response = await fetch('/api/orders', {
         headers: password ? { 'x-admin-password': password } : {},
       });
-      const data = await response.json();
+      const data = await readApiResponse(response);
 
       if (response.status === 401) {
         localStorage.removeItem('domifyAdminPassword');

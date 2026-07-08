@@ -22,6 +22,16 @@ const initialOrderForm = {
   phoneNumber: '',
 };
 
+async function readApiResponse(response: Response) {
+  const contentType = response.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
+    return response.json();
+  }
+
+  throw new Error('Server nije vratio API odgovor. Proverite da li je backend deployovan zajedno sa sajtom.');
+}
+
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pastLanding, setPastLanding] = useState(false);
@@ -53,7 +63,7 @@ export default function App() {
         },
         body: JSON.stringify(orderForm),
       });
-      const data = await response.json();
+      const data = await readApiResponse(response);
 
       if (!response.ok) {
         throw new Error(data.error || 'Porudžbina nije poslata.');
