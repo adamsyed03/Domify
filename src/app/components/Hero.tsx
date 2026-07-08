@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { motion, MotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
-import { instagramOrderUrl, openInstagramOrder } from '../../lib/instagram';
 
 type HeroProps = {
   scrollProgress: MotionValue<number>;
+  onOpenOrderForm: () => void;
 };
 
 function ScrollReveal({
@@ -39,7 +39,7 @@ function ScrollReveal({
   );
 }
 
-export function Hero({ scrollProgress }: HeroProps) {
+export function Hero({ scrollProgress, onOpenOrderForm }: HeroProps) {
   const underlineScale = useTransform(scrollProgress, [0.04, 0.14], [0, 1]);
   const bottomFadeOpacity = useTransform(scrollProgress, [0.58, 0.9], [0, 1]);
 
@@ -100,19 +100,16 @@ export function Hero({ scrollProgress }: HeroProps) {
                 </motion.div>
 
                 <div className="flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row sm:items-center">
-                  <motion.a
-                    href={instagramOrderUrl}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      openInstagramOrder();
-                    }}
+                  <motion.button
+                    type="button"
+                    onClick={onOpenOrderForm}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#7fff00] px-8 py-4 font-bold text-[#1a1f2e] shadow-lg shadow-[#7fff00]/20 transition-colors hover:bg-[#6eee00] sm:w-auto"
                   >
                     <ShoppingCart className="h-5 w-5" />
                     Poruči odmah
-                  </motion.a>
+                  </motion.button>
                 </div>
               </div>
             </ScrollReveal>
