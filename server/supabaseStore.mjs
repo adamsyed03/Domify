@@ -1,16 +1,20 @@
 import { loadLocalEnv } from './env.mjs';
+import dns from 'node:dns';
 
 loadLocalEnv();
+dns.setDefaultResultOrder('ipv4first');
 
 const tableName = process.env.SUPABASE_ORDERS_TABLE || 'orders';
 
 function normalizeSupabaseUrl(url) {
-  return url.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+  const trimmedUrl = url.trim();
+  const urlWithProtocol = /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
+  return urlWithProtocol.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
 }
 
 function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = process.env.SUPABASE_URL?.trim();
+  const serviceRoleKey = (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)?.trim();
 
   if (!url || !serviceRoleKey) {
     return null;
@@ -76,7 +80,9 @@ async function requestSupabase(pathAndQuery = '', options = {}) {
       headers,
     });
   } catch (error) {
-    throw new Error(`Supabase connection failed: ${error.message}`);
+    const cause = error.cause;
+    const details = cause?.code || cause?.message || error.message;
+    throw new Error(`Supabase connection failed: ${details}`);
   }
 
   const text = await response.text();
