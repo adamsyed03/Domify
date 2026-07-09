@@ -57,16 +57,27 @@ async function requestSupabase(pathAndQuery = '', options = {}) {
     return null;
   }
 
-  const response = await fetch(`${config.endpoint}${pathAndQuery}`, {
-    ...options,
-    headers: {
-      apikey: config.serviceRoleKey,
-      Authorization: `Bearer ${config.serviceRoleKey}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=representation',
-      ...(options.headers || {}),
-    },
-  });
+  const headers = {
+    apikey: config.serviceRoleKey,
+    'Content-Type': 'application/json',
+    Prefer: 'return=representation',
+    ...(options.headers || {}),
+  };
+
+  if (!config.serviceRoleKey.startsWith('sb_secret_')) {
+    headers.Authorization = `Bearer ${config.serviceRoleKey}`;
+  }
+
+  let response;
+
+  try {
+    response = await fetch(`${config.endpoint}${pathAndQuery}`, {
+      ...options,
+      headers,
+    });
+  } catch (error) {
+    throw new Error(`Supabase connection failed: ${error.message}`);
+  }
 
   const text = await response.text();
   const data = text ? JSON.parse(text) : null;
