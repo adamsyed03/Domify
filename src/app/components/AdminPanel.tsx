@@ -41,6 +41,7 @@ export function AdminPanel() {
   const [error, setError] = useState('');
   const [adminPassword, setAdminPassword] = useState(() => localStorage.getItem('domifyAdminPassword') || '');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [storageMode, setStorageMode] = useState('');
 
   const loadOrders = async (password = adminPassword) => {
     setLoading(true);
@@ -66,7 +67,11 @@ export function AdminPanel() {
         localStorage.setItem('domifyAdminPassword', password);
       }
 
+      const statusResponse = await fetch('/api/status');
+      const statusData = await readApiResponse(statusResponse);
+
       setIsLoggedIn(true);
+      setStorageMode(statusData.storage || '');
       setOrders(data.orders || []);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Porudžbine nisu učitane.');
@@ -174,7 +179,11 @@ export function AdminPanel() {
           </div>
           <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:col-span-2">
             <p className="text-sm font-bold text-gray-500">Storage</p>
-            <p className="mt-1 text-sm text-gray-700">Saved locally in data/orders.json on this server.</p>
+            <p className="mt-1 text-sm text-gray-700">
+              {storageMode === 'supabase'
+                ? 'Saved in Supabase.'
+                : 'Saved locally in data/orders.json on this server.'}
+            </p>
           </div>
         </div>
 

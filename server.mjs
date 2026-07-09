@@ -65,6 +65,6 @@ createServer(async (req, res) => {
       res.end('Not found');
     }
   }
-}).listen(port, () => {
+}).listen(port, '0.0.0.0', () => {
   console.log(`Domify server running at http://localhost:${port}`);
 });
