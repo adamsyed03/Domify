@@ -1,6 +1,6 @@
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FocusEvent, type FormEvent, useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Menu, X, ShoppingCart, Instagram, Phone, PhoneOff, PlayCircle } from 'lucide-react';
+import { CheckCircle2, Menu, X, ShoppingCart, Instagram, Phone, PhoneOff, PlayCircle } from 'lucide-react';
 import { Hero } from './components/Hero';
 import { Features } from './components/Features';
 import { ProductSection } from './components/ProductSection';
@@ -70,6 +70,12 @@ export default function App() {
     setOrderForm((current) => ({ ...current, [field]: value }));
   };
 
+  const keepFieldVisible = (event: FocusEvent<HTMLInputElement>) => {
+    window.setTimeout(() => {
+      event.currentTarget.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 120);
+  };
+
   const handleOrderSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setOrderSubmitting(true);
@@ -96,6 +102,17 @@ export default function App() {
       setOrderSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (!orderSuccess || !orderFormOpen) return;
+
+    const closeTimer = window.setTimeout(() => {
+      setOrderFormOpen(false);
+      window.setTimeout(() => setOrderSuccess(false), 250);
+    }, 2800);
+
+    return () => window.clearTimeout(closeTimer);
+  }, [orderSuccess, orderFormOpen]);
 
   useEffect(() => {
     const updateHeaderStyle = () => {
@@ -314,14 +331,27 @@ export default function App() {
       <Footer />
 
       <Dialog open={orderFormOpen} onOpenChange={setOrderFormOpen}>
-        <DialogContent className="max-h-[92dvh] overflow-y-auto border-0 bg-transparent p-0 shadow-none sm:max-w-[min(94vw,620px)]">
+        <DialogContent className="fixed bottom-0 left-1/2 top-auto max-h-[92dvh] w-full max-w-none translate-x-[-50%] translate-y-0 overflow-hidden rounded-b-none rounded-t-3xl border-0 bg-transparent p-0 shadow-none sm:bottom-auto sm:top-[50%] sm:max-w-[min(94vw,620px)] sm:translate-y-[-50%] sm:rounded-2xl">
           <DialogTitle className="sr-only">Porudžbina</DialogTitle>
           <form
             onSubmit={handleOrderSubmit}
-            className="overflow-hidden rounded-2xl bg-white text-[#1a1f2e] shadow-2xl shadow-black/35"
+            className="flex max-h-[92dvh] flex-col overflow-hidden rounded-t-3xl bg-white text-[#1a1f2e] shadow-2xl shadow-black/35 sm:rounded-2xl"
           >
-            <div className="bg-[#1a1f2e] px-5 py-5 text-white sm:px-7">
-              <div className="flex items-center gap-3">
+            {orderSuccess ? (
+              <div className="flex min-h-[420px] flex-col items-center justify-center px-6 py-10 text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#7fff00]/20 text-[#166534]">
+                  <CheckCircle2 className="h-11 w-11" />
+                </div>
+                <h2 className="mt-6 text-3xl font-extrabold">Porudžbina je poslata</h2>
+                <p className="mt-3 max-w-sm text-base font-semibold leading-7 text-gray-600">
+                  Hvala. Kontaktiraćemo vas uskoro radi potvrde dostave.
+                </p>
+                <p className="mt-6 text-sm font-bold text-gray-400">Vraćamo vas na sajt...</p>
+              </div>
+            ) : (
+              <>
+            <div className="shrink-0 bg-[#1a1f2e] px-5 py-5 text-white sm:px-7">
+              <div className="flex items-center gap-3 pr-8">
                 <img src={domifyLogo} alt="Domify" className="h-12 w-auto" />
                 <div>
                   <h2 className="text-2xl font-extrabold">Porudžbina</h2>
@@ -332,14 +362,16 @@ export default function App() {
               </div>
             </div>
 
-            <div className="grid gap-4 px-5 py-6 sm:grid-cols-2 sm:px-7">
+            <div className="grid flex-1 gap-4 overflow-y-auto overscroll-contain px-5 py-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:grid-cols-2 sm:px-7 sm:py-6">
               <label className="grid gap-2 text-sm font-extrabold">
                 Ime
                 <input
                   value={orderForm.firstName}
                   onChange={(event) => updateOrderField('firstName', event.target.value)}
+                  onFocus={keepFieldVisible}
                   required
                   autoComplete="given-name"
+                  enterKeyHint="next"
                   className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-semibold outline-none transition focus:border-[#7fff00] focus:ring-2 focus:ring-[#7fff00]/30"
                 />
               </label>
@@ -349,8 +381,10 @@ export default function App() {
                 <input
                   value={orderForm.lastName}
                   onChange={(event) => updateOrderField('lastName', event.target.value)}
+                  onFocus={keepFieldVisible}
                   required
                   autoComplete="family-name"
+                  enterKeyHint="next"
                   className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-semibold outline-none transition focus:border-[#7fff00] focus:ring-2 focus:ring-[#7fff00]/30"
                 />
               </label>
@@ -360,8 +394,10 @@ export default function App() {
                 <input
                   value={orderForm.houseFlatNumber}
                   onChange={(event) => updateOrderField('houseFlatNumber', event.target.value)}
+                  onFocus={keepFieldVisible}
                   required
                   autoComplete="address-line2"
+                  enterKeyHint="next"
                   className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-semibold outline-none transition focus:border-[#7fff00] focus:ring-2 focus:ring-[#7fff00]/30"
                 />
               </label>
@@ -371,8 +407,10 @@ export default function App() {
                 <input
                   value={orderForm.street}
                   onChange={(event) => updateOrderField('street', event.target.value)}
+                  onFocus={keepFieldVisible}
                   required
                   autoComplete="address-line1"
+                  enterKeyHint="next"
                   className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-semibold outline-none transition focus:border-[#7fff00] focus:ring-2 focus:ring-[#7fff00]/30"
                 />
               </label>
@@ -382,8 +420,10 @@ export default function App() {
                 <input
                   value={orderForm.city}
                   onChange={(event) => updateOrderField('city', event.target.value)}
+                  onFocus={keepFieldVisible}
                   required
                   autoComplete="address-level2"
+                  enterKeyHint="next"
                   className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-semibold outline-none transition focus:border-[#7fff00] focus:ring-2 focus:ring-[#7fff00]/30"
                 />
               </label>
@@ -393,8 +433,10 @@ export default function App() {
                 <input
                   value={orderForm.country}
                   onChange={(event) => updateOrderField('country', event.target.value)}
+                  onFocus={keepFieldVisible}
                   required
                   autoComplete="country-name"
+                  enterKeyHint="next"
                   className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-semibold outline-none transition focus:border-[#7fff00] focus:ring-2 focus:ring-[#7fff00]/30"
                 />
               </label>
@@ -405,8 +447,11 @@ export default function App() {
                   type="tel"
                   value={orderForm.phoneNumber}
                   onChange={(event) => updateOrderField('phoneNumber', event.target.value)}
+                  onFocus={keepFieldVisible}
                   required
                   autoComplete="tel"
+                  inputMode="tel"
+                  enterKeyHint="send"
                   className="h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 text-base font-semibold outline-none transition focus:border-[#7fff00] focus:ring-2 focus:ring-[#7fff00]/30"
                 />
               </label>
@@ -431,6 +476,8 @@ export default function App() {
                 {orderSubmitting ? 'Slanje...' : 'Pošalji porudžbinu'}
               </button>
             </div>
+              </>
+            )}
           </form>
         </DialogContent>
       </Dialog>
