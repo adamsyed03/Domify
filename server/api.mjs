@@ -1,4 +1,5 @@
 import { createOrder, getOrderStorageMode, readOrders } from './orderStore.mjs';
+import { getSupabaseStatus } from './supabaseStore.mjs';
 
 const maxBodyBytes = 1024 * 1024;
 const adminPassword = process.env.ADMIN_PASSWORD || 'hima';
@@ -62,7 +63,10 @@ export async function handleApiRequest(req, res) {
     }
 
     if (url.pathname === '/api/status' && req.method === 'GET') {
-      sendJson(res, 200, { storage: getOrderStorageMode() });
+      sendJson(res, 200, {
+        storage: getOrderStorageMode(),
+        supabase: getSupabaseStatus(),
+      });
       return true;
     }
 

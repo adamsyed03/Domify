@@ -6,15 +6,19 @@ dns.setDefaultResultOrder('ipv4first');
 
 const tableName = process.env.SUPABASE_ORDERS_TABLE || 'orders';
 
+function cleanEnvValue(value) {
+  return String(value ?? '').trim().replace(/^["']|["']$/g, '');
+}
+
 function normalizeSupabaseUrl(url) {
-  const trimmedUrl = url.trim();
+  const trimmedUrl = cleanEnvValue(url);
   const urlWithProtocol = /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
   return urlWithProtocol.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
 }
 
 function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL?.trim();
-  const serviceRoleKey = (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)?.trim();
+  const url = cleanEnvValue(process.env.SUPABASE_URL);
+  const serviceRoleKey = cleanEnvValue(process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY);
 
   if (!url || !serviceRoleKey) {
     return null;
@@ -99,6 +103,22 @@ async function requestSupabase(pathAndQuery = '', options = {}) {
 
 export function isSupabaseConfigured() {
   return Boolean(getSupabaseConfig());
+}
+
+export function getSupabaseStatus() {
+  const config = getSupabaseConfig();
+
+  if (!config) {
+    return {
+      configured: false,
+      host: null,
+    };
+  }
+
+  return {
+    configured: true,
+    host: new URL(config.endpoint).host,
+  };
 }
 
 export async function readSupabaseOrders() {
